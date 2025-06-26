@@ -123,7 +123,7 @@ async def process_verified_likes(app: Application):
                 after = api_resp.get("LikesafterCommand", 0)
                 added = api_resp.get("LikesGivenByAPI", 0)
      if added == 0:
-    result = "❌ Like failed or daily max limit reached."
+                    result = "❌ Like failed or daily max limit reached."
                 else:
                     result = (
                         f"✅ *Request Processed Successfully*\n\n"
