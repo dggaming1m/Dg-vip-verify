@@ -116,13 +116,14 @@ async def process_verified_likes(app: Application):
                     )
                     users.update_one({"_id": user['_id']}, {"$set": {"processed": True}})
                     continue
-            try:
+try:
                 api_resp = requests.get(LIKE_API_URL.format(uid=uid), timeout=10).json()
                 player = api_resp.get("PlayerNickname", f"Player-{uid[-4:]}")
                 before = api_resp.get("LikesbeforeCommand", 0)
                 after = api_resp.get("LikesafterCommand", 0)
                 added = api_resp.get("LikesGivenByAPI", 0)
-     if added == 0:
+
+                if added == 0:
                     result = "❌ Like failed or daily max limit reached."
                 else:
                     result = (
@@ -134,7 +135,11 @@ async def process_verified_likes(app: Application):
                         f"🇮🇳 *Total Likes Now:* {after}\n"
                         f"⏰ *Processed At:* {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}"
                     )
-                    profiles.update_one({"user_id": user_id}, {"$set": {"last_used": datetime.utcnow()}}, upsert=True)
+                    profiles.update_one(
+                        {"user_id": user_id},
+                        {"$set": {"last_used": datetime.utcnow()}},
+                        upsert=True
+                    )
             except Exception as e:
                 result = f"❌ *API Error: Unable to process like*\n\n🆔 *UID:* `{uid}`\n📛 Error: {str(e)}"
             await app.bot.send_message(
